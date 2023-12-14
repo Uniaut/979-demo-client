@@ -1,5 +1,7 @@
 import tkinter as tk
 
+from src.view import WebcamContentSection, DetectedItemsSection
+
 
 class Mainframe(tk.Frame):
     def __init__(self, master, **kwargs):
@@ -18,3 +20,9 @@ class Mainframe(tk.Frame):
 
         self.content = tk.Frame(self)
         self.content.pack(fill="both", expand=True)
+
+        webcam_content = WebcamContentSection(self.content)
+        webcam_content.pack(side="left", fill="both", padx= 10, pady= 5, expand=True)
+
+        detected_items = DetectedItemsSection(self.content)
+        detected_items.pack(side="right", fill="both", padx= 10, pady= 5, expand=True)
