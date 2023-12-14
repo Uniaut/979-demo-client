@@ -21,7 +21,7 @@ class Mainframe(tk.Frame):
         self.content = tk.Frame(self)
         self.content.pack(fill="both", expand=True)
 
-        webcam_content = WebcamContentSection(self.content)
+        webcam_content = WebcamContentSection(self.content, action=lambda: print("action"))
         webcam_content.pack(side="left", fill="both", padx= 10, pady= 5, expand=True)
 
         detected_items = DetectedItemsSection(self.content)
