@@ -6,14 +6,14 @@ import numpy as np
 
 
 class WebcamContentSection(tk.Frame):
-    def __init__(self, master, **kwargs):
+    def __init__(self, master, action: callable, **kwargs):
         super().__init__(master, **kwargs)
         self.configure(bg="gray")
 
         self.webcam_area = tk.Canvas(self, bg="gray")
         self.webcam_area.pack(padx=10, pady=10, fill="both", expand=True)
 
-        self.action_button = tk.Button(self, text="Action")
+        self.action_button = tk.Button(self, text="Action", command=action)
         self.action_button.pack(side="bottom", padx=10, pady=10)
     
 
