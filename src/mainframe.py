@@ -1,6 +1,6 @@
 import tkinter as tk
 
-from src.view import WebcamContentSection, DetectedItemsSection
+from sections import WebcamContentSection, DetectedItemsSection
 
 
 class Mainframe(tk.Frame):

@@ -1,6 +1,6 @@
 import tkinter as tk
 
-from src.contoller import Mainframe
+from src.mainframe import Mainframe
 
 def main():
     root = tk.Tk()
