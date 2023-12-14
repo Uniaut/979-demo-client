@@ -3,7 +3,7 @@ import enum
 import tkinter as tk
 
 from src.sections import WebcamContentSection, DetectedItemsSection
-from src.utils import func
+from src.utils import request_prediction, visualize, to_items
 
 
 class Mode(enum.Enum):
@@ -31,7 +31,7 @@ class Mainframe(tk.Frame):
         self.content = tk.Frame(self)
         self.content.pack(fill="both", expand=True)
 
-        self.webcam_content = WebcamContentSection(self.content, action=self.change_mode)
+        self.webcam_content = WebcamContentSection(self.content, action=self.action)
         self.webcam_content.pack(side="left", fill="both", padx= 10, pady= 5, expand=True)
 
         self.detected_items = DetectedItemsSection(self.content)
@@ -39,35 +39,31 @@ class Mainframe(tk.Frame):
 
         self.preview()
     
-
-    def update_prediction(self):
-        self.webcam_content.update()
-        self.detected_items.update()
-
     
     def preview(self):
         if self.mode == Mode.PREVIEW:
             self.webcam_content.update_preview()
-            self.content.after(10, self.preview)
+            self.content.after(20, self.preview)
 
 
-    def capture(self):
-        self.webcam_content.update_preview()
-    
+    def capture_and_predict(self):
+        frame = self.webcam_content.update_preview()
+        rois, class_ids, scores = request_prediction(frame)
+        image = visualize(frame, rois, class_ids, scores)
+        self.webcam_content.update_predicted(image)
+        
+        items = to_items(rois, class_ids, scores)    
+        self.detected_items.update(items)
 
-    def change_mode(self):
+
+
+    def action(self):
         if self.mode == Mode.PREVIEW:
-            self.capture()
-            print('change mode to captured')
-            self.mode = Mode.CAPTURED
-            self.webcam_content.action_button.configure(state="disabled", text="Predicting...")
-            func(self.change_mode)
-        elif self.mode == Mode.CAPTURED:
-            print('change mode to predicted')
             self.mode = Mode.PREDICTED
+            self.capture_and_predict()
             self.webcam_content.action_button.configure(state="active", text="Reset")
         else:
-            print('change mode to preview')
             self.mode = Mode.PREVIEW
             self.webcam_content.action_button.configure(state="active", text="Capture")
+            self.detected_items.reset()
             self.preview()

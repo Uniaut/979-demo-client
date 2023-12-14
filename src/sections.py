@@ -16,21 +16,14 @@ class WebcamContentSection(tk.Frame):
         self.webcam_area = tk.Canvas(self, bg="gray")
         self.webcam_area.pack(padx=10, pady=10, fill="both", expand=True)
 
-        self.action_button = tk.Button(self, text="Action", command=self.action)
+        self.action_button = tk.Button(self, text="Capture", command=self.action)
         self.action_button.pack(side="bottom", padx=10, pady=10)
-    
 
-    def update_preview(self):
-        # get a frame from the webcam
-        _, frame = self.webcam.read()        
 
+    def update(self, frame):
         # resize the frame to fit the canvas
         self.webcam_area.update()
-        cv2.flip(frame, 1, frame)
         frame = cv2.resize(frame, (self.webcam_area.winfo_width(), self.webcam_area.winfo_height()))
-
-        # Convert the frame to RGB
-        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
         image = Image.fromarray(frame, mode="RGB")
 
@@ -42,10 +35,20 @@ class WebcamContentSection(tk.Frame):
         self.webcam_area.image_names = image
 
 
-    def update_predicted(self):
-        pass
+    def update_preview(self):
+        # get a frame from the webcam
+        _, frame = self.webcam.read()   
+        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        cv2.flip(frame, 1, frame)    
 
-        
+        self.update(frame)
+
+        return frame
+    
+    
+    def update_predicted(self, image):
+        self.update(image)
+
 
 class DetectedItemsSection(tk.Frame):
     def __init__(self, master, **kwargs):
@@ -55,6 +58,10 @@ class DetectedItemsSection(tk.Frame):
         self.listbox = tk.Listbox(self)
         self.listbox.pack(fill="both", expand=True)
     
-    def update(self):
+    def update(self, items):
+        for item in items:
+            text = f'{item["class_name"]} {item["score"]:.2f}'
+            self.listbox.insert(tk.END, text)
+
+    def reset(self):
         self.listbox.delete(0, tk.END)
-        self.listbox.insert(tk.END, f"Item {np.random.randint(0, 100)}")
