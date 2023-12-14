@@ -73,10 +73,11 @@ def visualize_bbox(img, bbox, class_name, score, color=(255, 0, 0), thickness=2)
 
 THRESHOLD = 0.3
 
-def visualize(image, bboxes, category_ids, scores):
+def visualize(image, bboxes, category_ids, scores, threshold=THRESHOLD):
     img = image.copy()
+    np.random.seed(0)
     for bbox, category_id, score in zip(bboxes, category_ids, scores):
-        if score < THRESHOLD:
+        if score < threshold:
             continue
         class_name = category_id_to_name[category_id]
         img = visualize_bbox(img, bbox, class_name, score, random_box_color())

@@ -51,12 +51,18 @@ class WebcamContentSection(tk.Frame):
 
 
 class DetectedItemsSection(tk.Frame):
-    def __init__(self, master, **kwargs):
+    def __init__(self, master, action, **kwargs):
         super().__init__(master, **kwargs)
         self.configure(bg="white")
+        self.action = action
 
-        self.listbox = tk.Listbox(self)
+        self.listbox = tk.Listbox(self, font=("Arial", 15))
         self.listbox.pack(fill="both", expand=True)
+
+        self.slider = tk.Scale(self, from_=0, to=1, resolution=0.05, orient=tk.HORIZONTAL, label="Threshold", command=lambda v: self.action())
+        self.slider.set(0.3)
+        self.slider.pack(side="bottom", fill="x", padx=10, pady=10)
+
     
     def update(self, items):
         for item in items:
