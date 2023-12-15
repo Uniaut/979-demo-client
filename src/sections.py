@@ -16,8 +16,8 @@ class WebcamContentSection(tk.Frame):
         self.webcam_area = tk.Canvas(self, bg="gray")
         self.webcam_area.pack(padx=10, pady=10, fill="both", expand=True)
 
-        self.action_button = tk.Button(self, text="Capture", command=self.action)
-        self.action_button.pack(side="bottom", padx=10, pady=10)
+        self.action_button = tk.Button(self, text="Capture", command=self.action, font=("Helvetica", 30), height=7)
+        self.action_button.pack(side="bottom", padx=10, pady=10, fill="both")
 
 
     def update(self, frame):
@@ -56,7 +56,7 @@ class DetectedItemsSection(tk.Frame):
         self.configure(bg="white")
         self.action = action
 
-        self.listbox = tk.Listbox(self, font=("Arial", 15))
+        self.listbox = tk.Listbox(self, font=("Helvetica", 15))
         self.listbox.pack(fill="both", expand=True)
 
         self.slider = tk.Scale(self, from_=0, to=1, resolution=0.05, orient=tk.HORIZONTAL, label="Threshold", command=lambda v: self.action())
@@ -66,7 +66,7 @@ class DetectedItemsSection(tk.Frame):
     
     def update(self, items):
         for item in items:
-            text = f'{item["class_name"]} {item["score"]:.2f}'
+            text = f'{item["class_name"]}Confidence: {item["score"]:.2f}'
             self.listbox.insert(tk.END, text)
 
     def reset(self):

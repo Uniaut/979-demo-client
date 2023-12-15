@@ -50,9 +50,11 @@ class Mainframe(tk.Frame):
     def capture_and_predict(self):
         self.mode = Mode.PREDICTED
         frame = self.webcam_content.update_preview()
-        
+
+        # clarify the image
+
         # resize the frame 75% smaller
-        frame = cv2.resize(frame, (0, 0), fx=0.75, fy=0.75)
+        # frame = cv2.resize(frame, (0, 0), fx=0.75, fy=0.75)
 
         rois, class_ids, scores = request_prediction(frame)
 
@@ -70,12 +72,19 @@ class Mainframe(tk.Frame):
         self.webcam_content.update_predicted(image)
 
 
+    def countdown_to_capture(self, seconds):
+        if seconds > 0:        
+            self.webcam_content.action_button.configure(state="disabled", text=f'{seconds}')
+            self.after(1000, lambda: self.countdown_to_capture(seconds - 1))
+        else:
+            self.webcam_content.action_button.configure(state="active", text="Reset")
+            self.capture_and_predict()
+
 
 
     def action(self):
         if self.mode == Mode.PREVIEW:
-            self.after(3000, self.capture_and_predict)
-            self.webcam_content.action_button.configure(state="active", text="Reset")
+            self.countdown_to_capture(3)
         else:
             self.mode = Mode.PREVIEW
             self.webcam_content.action_button.configure(state="active", text="Capture")
